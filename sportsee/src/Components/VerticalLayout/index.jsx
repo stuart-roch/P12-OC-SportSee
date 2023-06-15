@@ -6,6 +6,7 @@ const Container = styled.div`
     color:white;
     width:10%;
     text-align:center;
+    min-height:720px;
 `
 
 
