@@ -2,6 +2,9 @@ import styled from "styled-components"
 import VerticalLayout from "../../Components/VerticalLayout"
 import Count from "../../Components/Count"
 import DailyActivityChart from "../../Components/DailyActivityChart"
+import HebdoSessionChart from "../../Components/HebdoSessionChart"
+import PerformanceChart from "../../Components/PerformanceChart"
+import ScoreChart from "../../Components/ScoreChart"
 import Api from "../../utils/api/Api"
 import { useEffect, useState } from "react"
 
@@ -13,6 +16,10 @@ const MainContainer = styled.div`
     margin: 1rem 3rem;
 
     .charts_container{
+        display:flex;
+        justify-content:space-between;
+        flex-wrap:wrap;
+        width:75%;
         margin-top:50px;
     }
 `
@@ -23,7 +30,7 @@ const Name = styled.span`
 
 function Profil(){
 
-    const [data,setData] = useState({})
+    /*const [data,setData] = useState({})
 
     useEffect(() => {
         
@@ -39,9 +46,10 @@ function Profil(){
 
         fetchData()
         
-    },[])
+    },[])*/
 
-    console.log(Api.user(12))
+    const data = async () => await Api.user(12)
+    console.log(data())
 
     return (
         <Container>
@@ -53,9 +61,11 @@ function Profil(){
                 </div>
                 <div>
                     <div className="charts_container">
-                        <DailyActivityChart data={data}/>
+                        <DailyActivityChart data={data} />
+                        <HebdoSessionChart />
+                        <PerformanceChart />
+                        <ScoreChart data={{"todayScore": 0.12}}/>
                     </div>
-                    
                 </div>
             </MainContainer >
         </Container>

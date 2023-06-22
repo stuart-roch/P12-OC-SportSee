@@ -1,4 +1,4 @@
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,Text } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import styled from "styled-components"
 
 
@@ -14,7 +14,7 @@ function DailyActivityChart({data}){
                 <p className='legend_calories'>Calories brûlées (kCal)</p>
             </div>
         </ChartHeader>
-        <ResponsiveContainer width="100%" height={200}>
+        <ResponsiveContainer width="100%" height={250}>
             <BarChart
                 data={data}
                 margin={{
@@ -38,8 +38,9 @@ function DailyActivityChart({data}){
 }
 
 const Container = styled.div`
-    width:70%;
+    width:100%;
     background-color:#FBFBFB;
+    margin-bottom:25px;
 
     .custom-tooltip{
         background-color:red;
