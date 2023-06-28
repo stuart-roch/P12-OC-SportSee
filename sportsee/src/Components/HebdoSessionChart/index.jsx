@@ -11,19 +11,10 @@ function HebdoSessionChart({data}){
             <strong className='title'>Durée moyenne des sessions</strong>
         </ChartHeader>
         <ResponsiveContainer width="100%" height={200}>
-            <LineChart
-                data={data}
-                margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-                }}
-                barSize={4}
-            >
-                <XAxis dataKey="day" axisLine={false} tickLine={false}/>
+            <LineChart data={data}>
+                <XAxis dataKey="day" axisLine={false} tickLine={false} stroke="#FFFFFF80" padding={{left:10,right:10}} />
                 <Tooltip content={<CustomTooltip/>} />
-                <Line dataKey="sessionLength" type="monotone" dot={false} stroke="#FFFFFF"/>
+                <Line dataKey="sessionLength" type="monotone" dot={false} stroke="#FFFFFF" />
             </LineChart>
         </ResponsiveContainer>
     </Container>

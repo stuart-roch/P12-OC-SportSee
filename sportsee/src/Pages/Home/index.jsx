@@ -1,10 +1,11 @@
 import styled from "styled-components"
 import { Link } from "react-router-dom"
 import Card from "../../Components/Card"
+import Api from "../../utils/api/Api"
 
 function Home(){
 
-    const users = [{id:12,firstName : "Thomas", lastName : "DUPONT"},{id:18,firstName : "Lea", lastName : "DURAND"}]
+    const users = Api.users([12,18])
 
     return(
         <CenteredContainer>

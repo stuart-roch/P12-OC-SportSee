@@ -1,13 +1,21 @@
-import ICONYOGA from "../../assets/images/iconYoga.png"
-import ICONSWIMMING from "../../assets/images/iconSwimming.png"
+import styled from "styled-components"
 
-const iconsUrl = [ICONYOGA,ICONSWIMMING]
+import IconYoga from "../../assets/images/iconYoga.png"
+import IconSwimming from "../../assets/images/iconSwimming.png"
+import IconBiking from "../../assets/images/iconBiking.png"
+import IconMusculation from "../../assets/images/iconMusculation.png"
+
+const iconsUrl = [IconYoga,IconSwimming,IconBiking,IconMusculation]
+
+const StyledImg = styled.img`
+    width:80%;
+`
 
 function NavVerticale(){
     return (
-        <nav>
+        <nav className="nav-vertical">
             <ul>
-                {iconsUrl.map(iconUrl => <li key={iconUrl}><img src={iconUrl} alt="" /></li> )}
+                {iconsUrl.map(iconUrl => <li key={iconUrl}><StyledImg src={iconUrl} alt="" /></li> )}
             </ul>
         </nav>
     )
