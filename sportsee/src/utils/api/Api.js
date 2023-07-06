@@ -2,212 +2,159 @@ import caloriesIcon from "../../assets/images/calories-icon.png"
 import proteinIcon from "../../assets/images/protein-icon.png"
 import carbsIcon from "../../assets/images/carbs-icon.png"
 import fatIcon from "../../assets/images/fat-icon.png"
+import { ISPROD, MOCK_DATA , PROD_BASEURL } from "../../env.js"
 
 
 
 class Api {
 
-    constructor(baseUrl){
-        this.baseUrl = baseUrl
+    constructor(baseUrl,mockData,isProd){
+        isProd ? this.baseUrl = baseUrl : this.mockData = mockData
+        this.isProd = isProd
     }
 
-    getUser = (id) => { return {
-      data: {
-        id: 18,
-        userInfos: {
-          firstName: "Cecilia",
-          lastName: "Ratorez",
-          age: 34
-        },
-        score: 0.3,
-        keyData: {
-          calorieCount: 2500,
-          proteinCount: 90,
-          carbohydrateCount: 150,
-          lipidCount: 120
+    getUser = async (id) => {
+        if(this.isProd){
+
+          const response = await fetch(`${this.baseUrl}/user/${id}`)
+          return await response.json()
+
+        }else{
+
+          return this.mockData[id/6 - 2].user
+
         }
-      }
-    }}
-
-    getDailyActivity = (id) => { return {
-      data: {
-        userId: 18,
-        sessions: [
-          {
-            day: "2020-07-01",
-            kilogram: 70,
-            calories: 240
-          },
-          {
-            day: "2020-07-02",
-            kilogram: 69,
-            calories: 220
-          },
-          {
-            day: "2020-07-03",
-            kilogram: 70,
-            calories: 280
-          },
-          {
-            day: "2020-07-04",
-            kilogram: 70,
-            calories: 500
-          },
-          {
-            day: "2020-07-05",
-            kilogram: 69,
-            calories: 160
-          },
-          {
-            day: "2020-07-06",
-            kilogram: 69,
-            calories: 162
-          },
-          {
-            day: "2020-07-07",
-            kilogram: 69,
-            calories: 390
-          }
-        ]
-      }
-    }}
-    
-    getAverageSessions = (id) => { return {
-      data: {
-        userId: 18,
-        sessions: [
-          {
-            day: 1,
-            sessionLength: 30
-          },
-          {
-            day: 2,
-            sessionLength: 40
-          },
-          {
-            day: 3,
-            sessionLength: 50
-          },
-          {
-            day: 4,
-            sessionLength: 30
-          },
-          {
-            day: 5,
-            sessionLength: 30
-          },
-          {
-            day: 6,
-            sessionLength: 50
-          },
-          {
-            day: 7,
-            sessionLength: 50
-          }
-        ]
-      }
-    }}
-
-    getPerformance = (id) => { return {
-      data: {
-        userId: 18,
-        kind: {
-          1: "cardio",
-          2: "energy",
-          3: "endurance",
-          4: "strength",
-          5: "speed",
-          6: "intensity"
-        },
-        data: [
-          {
-            value: 200,
-            kind: 1
-          },
-          {
-            value: 240,
-            kind: 2
-          },
-          {
-            value: 80,
-            kind: 3
-          },
-          {
-            value: 80,
-            kind: 4
-          },
-          {
-            value: 220,
-            kind: 5
-          },
-          {
-            value: 110,
-            kind: 6
-          }
-        ]
-      }
-    }}
   }
+
+    getDailyActivity = async (id) => { 
+
+      if(this.isProd){
+
+        const response = await fetch(`${this.baseUrl}/user/${id}/activity`)
+        return await response.json()
+
+      }else{
+
+        return this.mockData[id/6-2].activity
+
+      }
+
+    }
+    
+    getAverageSessions = async (id) => {
+
+      if(this.isProd){
+
+        const response = await fetch(`${this.baseUrl}/user/${id}/average-sessions`)
+        return await response.json()
+
+      }else{
+
+        return this.mockData[id/6-2].averageSessions
+
+      }
+
+     }
+
+    getPerformance = async (id) => { 
+
+      if(this.isProd){
+
+        const response = await fetch(`${this.baseUrl}/user/${id}/performance`)
+        return await response.json()
+
+      }else{
+
+        return this.mockData[id/6-2].performance
+
+      }
+
+    }
+
+  }
+
 
 class ApiFormatter{
 
   constructor(isProd){
-    isProd ? this.api = new Api("localhost:3000") : this.api = new Api("./mock/data.json");
+    isProd ? this.api = new Api(PROD_BASEURL,null,isProd) : this.api = new Api(null,MOCK_DATA,isProd);
   }
   
-  users = (ids) => {
+  users = async (ids) => {
     let result = []
     for (const id of ids){
-      result.push({id : this.api.getUser(id).data.id, firstName : this.api.getUser(id).data.userInfos.firstName, lastName : this.api.getUser(id).data.userInfos.lastName})
+      const data = await this.api.getUser(id)
+      result.push({id : data.data.id, firstName : data.data.userInfos.firstName, lastName : data.data.userInfos.lastName})
     }
 
     return result
   }
 
-  userFirstName = (id) => this.api.getUser(id).data.userInfos.firstName
+  userFirstName = async (id) => {
+    
+    const data = await this.api.getUser(id)
+    return data.data.userInfos.firstName
 
-  userDailyActivity = (id) => { 
+  }
+
+  userDailyActivity = async (id) => { 
     //let result = []
-    let data = this.api.getDailyActivity(id).data.sessions
-    for (let i = 0; i < data.length; i++){
-      data[i].day = i + 1
-      //result.push({day : i, kilogram : data[i-1].kilogram, calories : data[i-1].calories})      
+    let data = await this.api.getDailyActivity(id)
+    for (let i = 0; i < data.data.sessions.length; i++){
+      data.data.sessions[i].day = i + 1
+      //result.push({day : i, kilogram : data.data.sessions[i-1].kilogram, calories : data.data.sessions[i-1].calories})     
     }
-    return data
+
+    return data.data.sessions
   }
 
-  userMacroNutriments = (id) => [
-    {category : "Calories", value : this.api.getUser(id).data.keyData.calorieCount, iconUrl : caloriesIcon},
-    {category : "Protéines", value : this.api.getUser(id).data.keyData.proteinCount, iconUrl : proteinIcon},
-    {category : "Glucides", value : this.api.getUser(id).data.keyData.carbohydrateCount, iconUrl : carbsIcon},
-    {category : "Lipides", value : this.api.getUser(id).data.keyData.lipidCount, iconUrl : fatIcon}
-  ]
+  userMacroNutriments = async (id) => { 
+    
+    const data = await this.api.getUser(id)
 
-  userScore = (id) => id === "18" ? [{value:this.api.getUser(id).data.score} , {value:1-this.api.getUser(id).data.score}]
-  : [{value:this.api.getUser(id).data.todayScore} , {value:1-this.api.getUser(id).data.todayScore}]
+    return [
+    {category : "Calories", value : data.data.keyData.calorieCount, iconUrl : caloriesIcon},
+    {category : "Protéines", value : data.data.keyData.proteinCount, iconUrl : proteinIcon},
+    {category : "Glucides", value : data.data.keyData.carbohydrateCount, iconUrl : carbsIcon},
+    {category : "Lipides", value : data.data.keyData.lipidCount, iconUrl : fatIcon}
+    ]
 
-  userAverageSessions = (id) => {
+  }
+
+  userScore = async (id) => {
+    
+    const data = await this.api.getUser(id)
+    
+    if(id === "18"){ 
+      return [{value: data.data.score} , {value: 1 - data.data.score}]
+    }else{
+      return [{value: data.data.todayScore} , {value: 1 - data.data.todayScore}]
+    }
+  } 
+
+  userAverageSessions = async (id) => {
     const days = ["L","M","M","J","V","S","D"]
-    let data = this.api.getAverageSessions(id).data.sessions
+    let data = await this.api.getAverageSessions(id)
 
-    for (let i = 0; i < data.length; i++){
-      data[i].day = days[i]   
+    for (let i = 0; i < data.data.sessions.length; i++){
+      data.data.sessions[i].day = days[i]   
     }
 
-    return data
+    return data.data.sessions
   }
 
-  userPerformance = (id) => {
-    const categories = ["Cardio","Energie","Endurance","Force","Vitesse","Intensité"]
-    let data = this.api.getPerformance(id).data.data
+  userPerformance = async (id) => {
 
-    for (let i = 0; i < data.length; i++){
-      data[i].kind = categories[i]   
+    const categories = ["Cardio","Energie","Endurance","Force","Vitesse","Intensité"]
+    let data = await this.api.getPerformance(id)
+
+    for (let i = 0; i < data.data.data.length; i++){
+      data.data.data[i].kind = categories[i]
     }
 
-    return data.reverse()
+    return data.data.data.reverse()
   }
 
 }
 // eslint-disable-next-line import/no-anonymous-default-export
-export default new ApiFormatter(false)
+export default new ApiFormatter(ISPROD)

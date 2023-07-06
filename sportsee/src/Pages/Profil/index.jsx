@@ -6,6 +6,7 @@ import HebdoSessionChart from "../../Components/HebdoSessionChart"
 import PerformanceChart from "../../Components/PerformanceChart"
 import ScoreChart from "../../Components/ScoreChart"
 import Api from "../../utils/api/Api"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 const Container = styled.div`
@@ -44,41 +45,48 @@ function Profil(){
 
     const { id } = useParams()
 
-    /*const [data,setData] = useState({})
+    const [firstName,setFirstName] = useState("")
+    const [macro,setMacro] = useState([])
+    const [isDataLoaded,setIsDataLoaded] = useState(false)
+    const [hasError,setHasError] = useState(false)
 
     useEffect(() => {
         
         async function fetchData(){
             try{
-                const response = await fetch("./mock/data.json")
-                const datas  = await response.json()
-                setData(datas)
+                const data1  = await Api.userFirstName(id)
+                const data2 = await Api.userMacroNutriments(id)
+                setFirstName(data1)
+                setMacro(data2)
             }catch(err){
-                console.log(err)
+                setHasError(true)
+            }finally{
+                setIsDataLoaded(true)
             }
         }
 
         fetchData()
         
-    },[])*/
+    },[id])
 
-    return (
+
+    return isDataLoaded && (
         <Container>
             <VerticalLayout />
             <MainContainer>
                 <div className="user_info">
-                    <h1>Bonjour <Name>{Api.userFirstName(id)}</Name></h1>
+                    <h1>Bonjour <Name>{firstName}</Name></h1>
                     <p>Félicitation ! Vous avez explosé vos objectifs hier 👏</p>
                 </div>
                 <div className="charts-macro_container">
                     <div className="charts_container">
-                        <DailyActivityChart data = {Api.userDailyActivity(id)} />
-                        <HebdoSessionChart data = {Api.userAverageSessions(id)} />
-                        <PerformanceChart data = {Api.userPerformance(id)} />
-                        <ScoreChart data={Api.userScore(id)}/>
+                        <DailyActivityChart api = {Api} id = {id} />
+                        <HebdoSessionChart api = {Api} id = {id} />
+                        <PerformanceChart api = {Api} id = {id} />
+                        <ScoreChart api = {Api} id = {id}/>
                     </div>
                     <div className="macro-count_container">
-                        {Api.userMacroNutriments(id).map(obj => <Count key={obj.category} iconUrl={obj.iconUrl} value={obj.value} category={obj.category}/>)}
+                        {macro.map(obj => <Count key={obj.category} iconUrl={obj.iconUrl} value={obj.value} category={obj.category}/>)}
                     </div>
                 </div>
             </MainContainer >

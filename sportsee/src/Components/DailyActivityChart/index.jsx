@@ -1,10 +1,32 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import styled from "styled-components"
+import { useState, useEffect } from 'react'
 
 
-function DailyActivityChart({data}){
+function DailyActivityChart({api, id}){
 
-    return (
+    const [chartData,setChartData] = useState([])
+    const [isDataLoaded,setIsDataLoaded] = useState(false)
+    const [hasError,setHasError] = useState(false)
+
+    useEffect(() => {
+        
+        async function fetchData(){
+            try{
+                const data = await api.userDailyActivity(id)
+                setChartData(data)
+            }catch(err){
+                setHasError(true)
+            }finally{
+                setIsDataLoaded(true)
+            }
+        }
+
+        fetchData()
+        
+    })
+
+    return isDataLoaded && (
     <Container>
         <ChartHeader>
             <strong className='title'>Activité quotidienne</strong>
@@ -15,7 +37,7 @@ function DailyActivityChart({data}){
         </ChartHeader>
         <ResponsiveContainer width="100%" height={250}>
             <BarChart
-                data={data}
+                data={chartData}
                 margin={{
                 top: 5,
                 right: 30,
@@ -26,10 +48,11 @@ function DailyActivityChart({data}){
             >
                 <CartesianGrid strokeDasharray="3" vertical={false}/>
                 <XAxis dataKey="day" />
-                <YAxis datakey="kilogram" orientation='right' axisLine={false} tickLine={false}/>
+                <YAxis dataKey="kilogram" domain={["dataMin-1","dataMax"]} orientation='right' axisLine={false} tickLine={false} tickCount={3}/>
+                <YAxis dataKey="calories" hide domain={["dataMin","dataMax"]} tickCount={100}/>
                 <Tooltip content={<CustomTooltip />}/>
                 <Bar dataKey="kilogram" fill="#000000" radius={[20,20,0,0]}/>
-                <Bar dataKey="calories" fill="#E60000" radius={[10,10,0,0]}/>
+                <Bar dataKey="calories" fill="#E60000" radius={[20,20,0,0]}/>
             </BarChart>
         </ResponsiveContainer>
     </Container>
