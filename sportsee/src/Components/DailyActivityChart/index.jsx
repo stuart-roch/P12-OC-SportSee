@@ -48,11 +48,11 @@ function DailyActivityChart({api, id}){
             >
                 <CartesianGrid strokeDasharray="3" vertical={false}/>
                 <XAxis dataKey="day" />
-                <YAxis dataKey="kilogram" domain={["dataMin-1","dataMax"]} orientation='right' axisLine={false} tickLine={false} tickCount={3}/>
-                <YAxis dataKey="calories" hide domain={["dataMin","dataMax"]} tickCount={100}/>
+                <YAxis yAxisId={1} dataKey="kilogram" domain={["dataMin-1","dataMax+2"]} orientation='right' axisLine={false} tickLine={false} tickCount={3}/>
+                <YAxis yAxisId={2} dataKey="calories" hide domain={[0,"dataMax+10"]} />
                 <Tooltip content={<CustomTooltip />}/>
-                <Bar dataKey="kilogram" fill="#000000" radius={[20,20,0,0]}/>
-                <Bar dataKey="calories" fill="#E60000" radius={[20,20,0,0]}/>
+                <Bar yAxisId={1} dataKey="kilogram" fill="#000000" radius={[20,20,0,0]}/>
+                <Bar yAxisId={2} dataKey="calories" fill="#E60000" radius={[20,20,0,0]}/>
             </BarChart>
         </ResponsiveContainer>
     </Container>

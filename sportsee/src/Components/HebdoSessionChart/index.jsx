@@ -35,7 +35,7 @@ function HebdoSessionChart({api,id}){
         <ResponsiveContainer width="100%" height={200}>
             <LineChart data={chartData} onMouseMove={(e) => customMouseMove(e)}>
                 <XAxis dataKey="day" axisLine={false} tickLine={false} stroke="#FFFFFF80" padding={{left:10,right:10}} />
-                <Tooltip content={<CustomTooltip/>} />
+                <Tooltip content={<CustomTooltip/>} cursor={false}/>
                 <Line dataKey="sessionLength" type="monotone" dot={false} stroke="#FFFFFF" />
             </LineChart>
         </ResponsiveContainer>
@@ -49,6 +49,7 @@ const Container = styled.div`
     background-color:#FF0000;
     border-radius:10px;
     position:relative;
+    z-index:1;
     
     .custom-tooltip{
         position:relative;
@@ -64,8 +65,10 @@ const Container = styled.div`
         height:100%;
         position:absolute;
         top:0;
-        left:0;
+        right:0;
         background-color:rgba(0,0,0,0.1);
+        border-radius:0 10px 10px 0;
+        z-index:-1;
     }
 `
 
@@ -103,13 +106,14 @@ const CustomTooltip = ({ active, payload }) => {
     if (e.isTooltipActive) {
       let windowWidth = sessionWrap.offsetWidth;
       let mouseXpercent = Math.floor(
-        (e.activeCoordinate.x / windowWidth) * 100
+        100 - ((e.activeCoordinate.x / windowWidth) * 100)
       );
       
       cursorContainer.style.display = "block"
       cursorContainer.style.width = `${mouseXpercent}%`;
     }else{
         cursorContainer.style.display = "none"
+        cursorContainer.style.width = "0%"
     }
     
 }

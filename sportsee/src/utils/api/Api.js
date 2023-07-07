@@ -35,7 +35,7 @@ class Api {
 
       }else{
 
-        return this.mockData[id/6-2].activity
+        return this.mockData[id/6 - 2].activity
 
       }
 
@@ -50,7 +50,7 @@ class Api {
 
       }else{
 
-        return this.mockData[id/6-2].averageSessions
+        return this.mockData[id/6 - 2].averageSessions
 
       }
 
@@ -65,7 +65,7 @@ class Api {
 
       }else{
 
-        return this.mockData[id/6-2].performance
+        return this.mockData[id/6 - 2].performance
 
       }
 

@@ -25,15 +25,16 @@ function ScoreChart({api,id}){
         fetchData()
         
     },[])
-    
-    return isDataLoaded && (
+
+    return (
     <Container>
         <ChartHeader>
             <strong className='title'>Score</strong>
         </ChartHeader>
+        {isDataLoaded && !hasError && <>
         <ResponsiveContainer width="100%" height={200}  >
             <PieChart >
-                <Pie dataKey="value" data={chartData} innerRadius={70} startAngle={180} endAngle={-180} blendStroke>
+                <Pie dataKey="value" data={chartData} innerRadius={70} startAngle={230} endAngle={-130} blendStroke>
                     <Cell fill="#FF0000" cornerRadius={50}/>
                     <Cell fill="#FBFBFB" />
                 </Pie>
@@ -44,8 +45,7 @@ function ScoreChart({api,id}){
             <strong>{chartData[0].value*100 +"%"}</strong>
             <p>de votre</p>
             <p>objectif</p>
-        </div>
-
+        </div></>}
     </Container>
     )
 }
