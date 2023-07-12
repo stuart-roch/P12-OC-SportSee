@@ -35,7 +35,7 @@ function HebdoSessionChart({api,id}){
         </ChartHeader>
         {(isDataLoaded && !hasError) &&
         <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={chartData} onMouseMove={(e) => customMouseMove(e)}>
+            <LineChart data={chartData} onMouseMove={(e) => customMouseMove(e)} onMouseOut={() => customOnMouseOut}>
                 <XAxis dataKey="day" axisLine={false} tickLine={false} stroke="#FFFFFF80" padding={{left:10,right:10}} />
                 <Tooltip content={<CustomTooltip/>} cursor={false}/>
                 <Line dataKey="sessionLength" type="monotone" dot={false} stroke="#FFFFFF" />
@@ -132,6 +132,13 @@ const CustomTooltip = ({ active, payload }) => {
         cursorContainer.style.width = "0%"
     }
     
+}
+
+function customOnMouseOut(){
+    const cursorContainer = document.querySelector(".tooltip-cursor_container")
+
+    cursorContainer.style.display = "none"
+        cursorContainer.style.width = "0%"
 }
 
 
