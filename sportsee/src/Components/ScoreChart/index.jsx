@@ -1,6 +1,7 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
 import styled from "styled-components"
 import { useState, useEffect } from 'react'
+import LoadSpinner from '../LoadSpinner'
 
 
 function ScoreChart({api,id}){
@@ -24,14 +25,14 @@ function ScoreChart({api,id}){
 
         fetchData()
         
-    },[])
+    },[api,id])
 
     return (
     <Container>
         <ChartHeader>
             <strong className='title'>Score</strong>
         </ChartHeader>
-        {isDataLoaded && !hasError && <>
+        {(isDataLoaded && !hasError) && <>
         <ResponsiveContainer width="100%" height={200}  >
             <PieChart >
                 <Pie dataKey="value" data={chartData} innerRadius={70} startAngle={230} endAngle={-130} blendStroke>
@@ -46,6 +47,8 @@ function ScoreChart({api,id}){
             <p>de votre</p>
             <p>objectif</p>
         </div></>}
+        {!isDataLoaded && <LoadSpinner/>}
+        {hasError && <div className='err-msg_container'><strong>Une erreur empêche d'afficher le graphique</strong></div> }
     </Container>
     )
 }
@@ -60,7 +63,11 @@ const Container = styled.div`
         margin:0;
     }
 
-    .obj-percent_container{
+    .obj-percent_container strong{
+        font-size:1.5rem;
+    }
+
+    .obj-percent_container, .err-msg_container{
         position:absolute;
         display: flex;
         flex-direction: column;
@@ -69,6 +76,10 @@ const Container = styled.div`
         width: 100%;
         height: 100%;
         top: 0;
+    }
+
+    .err-msg_container{
+        text-align:center;
     }
 `
 

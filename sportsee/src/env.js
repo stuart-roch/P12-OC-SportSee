@@ -1,6 +1,6 @@
 import data from "./assets/mock/data.json"
 
-const ISPROD = false
+const ISPROD = true
 
 const PROD_BASEURL = "http://localhost:3000"
 

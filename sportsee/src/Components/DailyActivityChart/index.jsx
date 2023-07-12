@@ -1,6 +1,7 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import styled from "styled-components"
 import { useState, useEffect } from 'react'
+import LoadSpinner from '../LoadSpinner'
 
 
 function DailyActivityChart({api, id}){
@@ -24,9 +25,9 @@ function DailyActivityChart({api, id}){
 
         fetchData()
         
-    })
+    },[api,id])
 
-    return isDataLoaded && (
+    return (
     <Container>
         <ChartHeader>
             <strong className='title'>Activité quotidienne</strong>
@@ -34,19 +35,11 @@ function DailyActivityChart({api, id}){
                 <p className='legend_poids'>Poids (kg)</p>
                 <p className='legend_calories'>Calories brûlées (kCal)</p>
             </div>
-        </ChartHeader>
+        </ChartHeader>{
+        (isDataLoaded && !hasError) &&
         <ResponsiveContainer width="100%" height={250}>
-            <BarChart
-                data={chartData}
-                margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-                }}
-                barSize={4}
-            >
-                <CartesianGrid strokeDasharray="3" vertical={false}/>
+            <BarChart data={chartData} barSize={6} >
+                <CartesianGrid strokeDasharray="3" vertical={false} />
                 <XAxis dataKey="day" />
                 <YAxis yAxisId={1} dataKey="kilogram" domain={["dataMin-1","dataMax+2"]} orientation='right' axisLine={false} tickLine={false} tickCount={3}/>
                 <YAxis yAxisId={2} dataKey="calories" hide domain={[0,"dataMax+10"]} />
@@ -54,21 +47,37 @@ function DailyActivityChart({api, id}){
                 <Bar yAxisId={1} dataKey="kilogram" fill="#000000" radius={[20,20,0,0]}/>
                 <Bar yAxisId={2} dataKey="calories" fill="#E60000" radius={[20,20,0,0]}/>
             </BarChart>
-        </ResponsiveContainer>
+        </ResponsiveContainer>}
+        {!isDataLoaded && <LoadSpinner/>}
+        {hasError && <div className='err-msg_container'><strong>Une erreur empêche d'afficher le graphique</strong></div> }
     </Container>
     )
 }
 
 const Container = styled.div`
+    position:relative;
     width:100%;
     background-color:#FBFBFB;
     margin-bottom:25px;
+    height:350px;
 
     .custom-tooltip{
         background-color:red;
         color:white;
         font-size:7px;
         padding:2px 5px;
+    }
+
+    .err-msg_container{
+        position:absolute;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        text-align:center;
     }
 `
 

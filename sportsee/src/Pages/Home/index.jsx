@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import Card from "../../Components/Card"
 import Api from "../../utils/api/Api"
 import { useEffect, useState } from "react"
+import LoadSpinner from "../../Components/LoadSpinner"
 
 function Home(){
     
@@ -25,11 +26,15 @@ function Home(){
 
         fetchData()
     },[])
-
-    return isDataLoaded && (
+    
+    return (
         <CenteredContainer>
             <Container>
-                {users.map(user => <StyledLink to={"/profil/"+user.id} key={user.id} ><Card firstName={user.firstName} lastName={user.lastName}/></StyledLink>)}
+                {(!hasError && isDataLoaded) &&  
+                users.map(user => <StyledLink to={"/profil/"+user.id} key={user.id} ><Card firstName={user.firstName} lastName={user.lastName}/></StyledLink>)
+                }
+                {!isDataLoaded && <LoadSpinner/>}
+                {hasError && <strong>Une erreur empêche l'affichage des utilisateurs</strong>}
             </Container>
         </CenteredContainer>
     )
@@ -46,6 +51,7 @@ const CenteredContainer = styled.div`
 const Container = styled.div`
     display:flex;
     align-items:center;
+    position:relative;
 `
 const StyledLink = styled(Link)`
     display:flex;

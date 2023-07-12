@@ -1,6 +1,7 @@
 import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import styled from "styled-components"
 import { useState, useEffect } from 'react'
+import LoadSpinner from '../LoadSpinner'
 
 
 function HebdoSessionChart({api,id}){
@@ -24,22 +25,25 @@ function HebdoSessionChart({api,id}){
 
         fetchData()
         
-    },[])
+    },[api,id])
 
 
-    return isDataLoaded && (
+    return (
     <Container className='average-sessions-chart_container'>
         <ChartHeader>
             <strong className='title'>Durée moyenne des sessions</strong>
         </ChartHeader>
+        {(isDataLoaded && !hasError) &&
         <ResponsiveContainer width="100%" height={200}>
             <LineChart data={chartData} onMouseMove={(e) => customMouseMove(e)}>
                 <XAxis dataKey="day" axisLine={false} tickLine={false} stroke="#FFFFFF80" padding={{left:10,right:10}} />
                 <Tooltip content={<CustomTooltip/>} cursor={false}/>
                 <Line dataKey="sessionLength" type="monotone" dot={false} stroke="#FFFFFF" />
             </LineChart>
-        </ResponsiveContainer>
+        </ResponsiveContainer>}
+        {!isDataLoaded && <LoadSpinner/>}
         <div className='tooltip-cursor_container'></div>
+        {hasError && <div className='err-msg_container'><strong>Une erreur empêche d'afficher le graphique</strong></div> }
     </Container>
     )
 }
@@ -69,6 +73,18 @@ const Container = styled.div`
         background-color:rgba(0,0,0,0.1);
         border-radius:0 10px 10px 0;
         z-index:-1;
+    }
+
+    .err-msg_container{
+        position:absolute;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        text-align:center;
     }
 `
 
@@ -100,7 +116,7 @@ const CustomTooltip = ({ active, payload }) => {
   }
 
   function customMouseMove(e){
-    const sessionWrap = document.querySelector('.average-sessions-chart_container');
+    const sessionWrap = document.querySelector('.average-sessions-chart_container')
     const cursorContainer = document.querySelector(".tooltip-cursor_container")
 
     if (e.isTooltipActive) {
@@ -110,7 +126,7 @@ const CustomTooltip = ({ active, payload }) => {
       );
       
       cursorContainer.style.display = "block"
-      cursorContainer.style.width = `${mouseXpercent}%`;
+      cursorContainer.style.width = `${mouseXpercent}%`
     }else{
         cursorContainer.style.display = "none"
         cursorContainer.style.width = "0%"
